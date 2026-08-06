@@ -516,6 +516,7 @@ enum layers {
     _NUM_SYM,
     _NAV,
     _FN,
+    _MOUSE_NAV,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -528,7 +529,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             KC_Z,        KC_X,        KC_C,        KC_V,        KC_B,                 KC_N,        KC_M,        KC_COMM,     KC_DOT,      KC_SLSH,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            LT(_FN, KC_ESC),  LT(_NAV, KC_TAB),    LT(_NUM_SYM, KC_SPC),              KC_BSPC,       OSM(MOD_LSFT),          KC_ENT
+            LT(_FN, KC_ESC),  LT(_MOUSE_NAV, KC_TAB), LT(_NUM_SYM, KC_SPC),           LT(_NAV, KC_BSPC), OSM(MOD_LSFT), KC_ENT
 
     ),
 
@@ -545,13 +546,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_NAV] = LAYOUT_split_3x5_3(
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            CTRL_CMD_LEFT, CTRL_CMD_RIGHT, KC_NO, KC_NO,        KC_NO,                KC_CAPS,     KC_PGDN,     KC_PGUP,     KC_INS,      KC_PSCR,
+            KC_NO,       KC_NO,       KC_NO,       KC_NO,       KC_NO,                KC_CAPS,     KC_PGDN,     KC_PGUP,     KC_INS,      KC_PSCR,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             KC_LCTL,     KC_LALT,     KC_LGUI,     KC_LSFT,     KC_NO,                KC_LEFT,     KC_DOWN,     KC_UP,       KC_RGHT,     KC_NO,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            KC_NO,       KC_NO,       KC_NO,       KC_NO,       KC_NO,                MS_LEFT,     MS_DOWN,     MS_UP,       MS_RGHT,     KC_DEL,
+            KC_NO,       KC_NO,       KC_NO,       KC_NO,       KC_NO,                KC_NO,       KC_NO,       KC_NO,       KC_NO,       KC_DEL,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-                                      KC_NO,       KC_NO,       KC_NO,                MS_BTN1,     MS_BTN2,     KC_ENT
+                          KC_NO,       CTRL_CMD_LEFT,     CTRL_CMD_RIGHT,             KC_NO,       KC_NO,       KC_ENT
     ),
 
     [_FN] = LAYOUT_split_3x5_3(
@@ -565,6 +566,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                       KC_NO,       KC_NO,       KC_NO,                KC_NO,       KC_NO,       KC_NO
     ),
 
+    [_MOUSE_NAV] = LAYOUT_split_3x5_3(
+        //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
+            KC_NO,       KC_NO,       KC_NO,       KC_NO,       KC_NO,                MS_WHLL,     MS_WHLD,     MS_WHLU,     MS_WHLR,     KC_NO,
+        //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
+            KC_NO,       KC_NO,       KC_NO,       KC_NO,       KC_NO,                MS_LEFT,     MS_DOWN,     MS_UP,       MS_RGHT,     KC_NO,
+        //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
+            KC_NO,       KC_NO,       KC_NO,       KC_NO,       KC_NO,                KC_NO,       KC_NO,       KC_NO,       KC_NO,       KC_NO,
+        //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
+                                      MS_ACL2,     MS_ACL1,     MS_ACL0,              MS_BTN1,     MS_BTN2,     KC_NO
+    ),
 };
 
 // ====================

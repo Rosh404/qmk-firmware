@@ -9,7 +9,7 @@ OLED_ENABLE = yes # OLEDs
 CONSOLE_ENABLE = no
 COMMAND_ENABLE = no
 
-MOUSEKEY_ENABLE = ye # Mouse keys(+4700)
+MOUSEKEY_ENABLE = yes # Mouse keys(+4700)
 EXTRAKEY_ENABLE = yes # Audio control and System control(+450)
 SPACE_CADET_ENABLE = yes # Macro
 GRAVE_ESC_ENABLE = no
