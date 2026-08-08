@@ -1,5 +1,4 @@
-/*
-Copyright 2019 @foostan
+/* Copyright 2019 @foostan
 Copyright 2020 Drashna Jaelre <@drashna>
 
 This program is free software: you can redistribute it and/or modify
@@ -535,11 +534,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_NUM_SYM] = LAYOUT_split_3x5_3(
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            KC_GRV,      S(KC_8),     S(KC_1),     S(KC_7),     S(KC_BSLS),            KC_7,       KC_8,        KC_9,        KC_PMNS,    KC_NO,
+            KC_GRV,      S(KC_8),     S(KC_1),     S(KC_7),     S(KC_BSLS),            KC_1,       KC_2,        KC_3,        KC_PMNS,    KC_NO,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             KC_MINS,     S(KC_MINS),  KC_EQL,      S(KC_SCLN),  S(KC_2),               KC_4,       KC_5,        KC_6,        S(KC_EQL),  KC_EQL,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            S(KC_GRV),   S(KC_6),     S(KC_5),     S(KC_4),     S(KC_3),               KC_1,       KC_2,        KC_3,        KC_DOT,     KC_BSLS,
+            S(KC_GRV),   S(KC_6),     S(KC_4),     S(KC_5),     S(KC_3),               KC_7,       KC_8,        KC_9,        KC_DOT,     KC_BSLS,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
                                      KC_NO,        KC_NO,       KC_NO,                 KC_BSPC,    KC_0,        KC_NO
     ),
@@ -599,6 +598,7 @@ enum combos {
     _COMBO_GRV,
     _COMBO_UNDERSCORE,
     _COMBO_DASH,
+    _COMBO_ASTERICK,
 };
 
 const uint16_t PROGMEM combo_cmd[] = {MT(MOD_LCTL,KC_A), MT(MOD_LALT, KC_S), KC_D, COMBO_END};
@@ -617,6 +617,7 @@ const uint16_t PROGMEM combo_equal[] = {MT(MOD_RALT, KC_L), MT(MOD_RCTL, KC_QUOT
 const uint16_t PROGMEM combo_grv[] = {KC_Q, KC_W, COMBO_END};
 const uint16_t PROGMEM combo_underscore[] = {KC_I, KC_O, COMBO_END};
 const uint16_t PROGMEM combo_dash[] = {KC_O, KC_P, COMBO_END};
+const uint16_t PROGMEM combo_asterick[] = {KC_W, KC_E, COMBO_END};
 
 combo_t key_combos[] = {
     [_COMBO_CMD] = COMBO(combo_cmd, OSM(MOD_LGUI)),
@@ -635,6 +636,6 @@ combo_t key_combos[] = {
     [_COMBO_GRV] = COMBO(combo_grv, KC_GRV),
     [_COMBO_UNDERSCORE] = COMBO(combo_underscore, S(KC_MINUS)),
     [_COMBO_DASH] = COMBO(combo_dash, KC_MINUS),
+    [_COMBO_ASTERICK] = COMBO(combo_asterick, S(KC_8)),
 };
-
 #endif

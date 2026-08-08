@@ -33,3 +33,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     // #define ANIM_INVERT false
     // #define ANIM_RENDER_WPM true
 #endif
+
+#ifdef COMBO_ENABLE
+    #define COMBO_TERM 50
+#endif
