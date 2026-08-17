@@ -20,6 +20,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+#ifdef TAP_DANCE_ENABLE
+    #define TAPPING_TERM 175
+    #define TAPPING_TERM_PER_KEY
+#endif
+
+#ifdef CAPS_WORD_ENABLE
+    // #define DOUBLE_TAP_SHIFT_TURNS_ON_CAPS_WORD
+#endif
+
 #ifdef OLED_ENABLE
     // WPM-responsive animation stuff here
     #define IDLE_FRAMES 5
