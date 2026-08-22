@@ -20,29 +20,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+// General
+#define TAPPING_TOGGLE 2
+
 #ifdef TAP_DANCE_ENABLE
-    #define TAPPING_TERM 175
-    #define TAPPING_TERM_PER_KEY
+#define TAPPING_TERM 175
+#define TAPPING_TERM_PER_KEY
 #endif
 
 #ifdef CAPS_WORD_ENABLE
-    // #define DOUBLE_TAP_SHIFT_TURNS_ON_CAPS_WORD
+//#define DOUBLE_TAP_SHIFT_TURNS_ON_CAPS_WORD
 #endif
 
 #ifdef OLED_ENABLE
-    // WPM-responsive animation stuff here
-    #define IDLE_FRAMES 5
-    #define IDLE_SPEED 35 // below this wpm value your animation will idle
-    #define PREP_FRAMES 2
-    #define TAP_FRAMES 5
-    #define TAP_SPEED 50
-    #define ANIM_FRAME_DURATION 150 // how long each frame lasts in ms
-    #define ANIM_SIZE 416 // number of bytes in array, minimize for adequate firmware size, max is 1024
-    #define FAST_TYPE_WPM 45 //Switch to fast animation when over words per minute
-    // #define ANIM_INVERT false
-    // #define ANIM_RENDER_WPM true
+// WPM-responsive animation stuff here
+#define IDLE_FRAMES 5
+#define IDLE_SPEED 35 // below this wpm value your animation will idle
+#define PREP_FRAMES 2
+#define TAP_FRAMES 5
+#define TAP_SPEED 50
+#define ANIM_FRAME_DURATION 150 // how long each frame lasts in ms
+#define ANIM_SIZE 416 // number of bytes in array, minimize for adequate firmware size, max is 1024
+#define FAST_TYPE_WPM 45 //Switch to fast animation when over words per minute
+//#define ANIM_INVERT false
+//#define ANIM_RENDER_WPM true
 #endif
 
 #ifdef COMBO_ENABLE
-    #define COMBO_TERM 50
+#define COMBO_TERM 50
 #endif

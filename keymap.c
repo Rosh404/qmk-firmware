@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include QMK_KEYBOARD_H
 #include "action_tapping.h"
+#include "swapper.c"
 
 #ifdef OLED_ENABLE
 
@@ -466,7 +467,7 @@ bool oled_task_user(void) {
 // ====================
 enum layers {
     _QWERTY,
-    _SYM,
+    _SYM_NUM,
     _EXTEND,
     _FN,
 };
@@ -486,12 +487,24 @@ enum custom_keycodes {
     SKIP_WORD_R,
     CTL_ALT_DEL,
     ALT_F4,
-    EXT_ENTER,
+    // EXT_ENTER, // Enter back to _QWERTY/Base layer
+    UNDO,
+    REDO,
+    CUT,
     COPY,
-    PASTE
+    PASTE,
+    SW_WIN,  // Switch to next window         (alt-tab)
+    SW_TAB,  // Switch to next browser tab    (ctrl-tab)
 };
 
+bool sw_win_active = false;
+bool sw_tab_active = false;
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+
+    update_swapper(&sw_win_active, KC_LALT, KC_TAB, SW_WIN, KC_LSFT, keycode, record);
+    update_swapper(&sw_tab_active, KC_LCTL, KC_TAB, SW_TAB, KC_LSFT, keycode, record);
+
     if (!record->event.pressed) {
         return true;
     }
@@ -540,9 +553,24 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             tap_code(KC_F4);
             unregister_code(KC_LALT);
             return false;
-        case EXT_ENTER:
-            tap_code(KC_ENT);
-            layer_move(_QWERTY);
+        // case EXT_ENTER:
+        //     tap_code(KC_ENT);
+        //     layer_move(_QWERTY);
+        //     return false;
+        case UNDO:
+            register_code(KC_LCTL);
+            tap_code(KC_Z);
+            unregister_code(KC_LCTL);
+            return false;
+        case REDO:
+            register_code(KC_LCTL);
+            tap_code(KC_Y);
+            unregister_code(KC_LCTL);
+            return false;
+        case CUT:
+            register_code(KC_LCTL);
+            tap_code(KC_X);
+            unregister_code(KC_LCTL);
             return false;
         case COPY:
             register_code(KC_LCTL);
@@ -591,11 +619,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             KC_Z,        KC_X,        KC_C,        KC_V,        KC_B,                 KC_N,        KC_M,        KC_COMM,     KC_DOT,      KC_SLSH,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-                                           KC_NO,  TO(_EXTEND), KC_SPC,               OSM(MOD_LSFT),  TO(_SYM),   KC_NO
+                                           KC_NO,  MO(_EXTEND), KC_SPC,               OSM(MOD_LSFT),  TO(_SYM_NUM),   KC_NO
 
     ),
 
-    [_SYM] = LAYOUT_split_3x5_3(
+    [_SYM_NUM] = LAYOUT_split_3x5_3(
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             S(KC_GRV),   S(KC_8),     S(KC_1),     S(KC_7),     S(KC_BSLS),           KC_7,        KC_8,        KC_9,        KC_MINS,     S(KC_EQL),
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
@@ -603,29 +631,29 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             KC_BSLS,     S(KC_6),     S(KC_4),     S(KC_5),     S(KC_3),              KC_1,        KC_2,        KC_3,        KC_DOT,      KC_SLSH,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-                                      KC_NO,       TO(_EXTEND), KC_SPC,               KC_NO,       TO(_QWERTY), KC_NO
+                                      KC_NO,       MO(_EXTEND), KC_SPC,               KC_NO,       TO(_QWERTY), KC_NO
     ),
 
     [_EXTEND] = LAYOUT_split_3x5_3(
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            KC_ESC,      CTRL_TAB_L,  KC_NO,       KC_NO,       CTRL_TAB_R,           KC_HOME,     KC_PGDN,     KC_PGUP,     KC_END,      KC_INS,
+            KC_ESC,      CTRL_CMD_L,  SW_WIN,      SW_TAB,      CTRL_CMD_R,           KC_HOME,     KC_PGDN,     KC_PGUP,     KC_END,      KC_INSERT,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            KC_LCTL,     KC_LALT,     KC_LSFT,     KC_LGUI,     KC_TAB,               KC_LEFT,     KC_DOWN,     KC_UP,       KC_RGHT,     KC_BSPC,
+            OSM(MOD_LCTL), OSM(MOD_LALT), OSM(MOD_LSFT), OSM(MOD_LGUI), KC_TAB,       KC_LEFT,     KC_DOWN,     KC_UP,       KC_RGHT,     KC_BSPC,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            KC_CAPS,     CTRL_CMD_L,  COPY,        PASTE,       CTRL_CMD_R,           SKIP_WORD_L, SEL_WORD_L,  SEL_WORD_R,  SKIP_WORD_R, KC_DEL,
+            UNDO,        CUT,         COPY,        PASTE,       REDO,                 SKIP_WORD_L, SEL_WORD_L,  SEL_WORD_R,  SKIP_WORD_R, KC_DEL,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-                                            KC_NO, KC_NO,       KC_NO,                EXT_ENTER,   TO(_QWERTY), KC_NO
+                                      KC_NO,       KC_NO,       KC_NO,                KC_ENT,      MO(_FN),     KC_NO
     ),
 
     [_FN] = LAYOUT_split_3x5_3(
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            ALT_F4,      KC_F1,       KC_F2,       KC_F3,       KC_F4,                KC_MNXT,     KC_VOLD,     KC_VOLU,     KC_MPRV,     KC_MPLY,
+            KC_VOLD,     KC_VOLU,     KC_BRID,     KC_BRIU,     KC_NO,                KC_F7,       KC_F8,       KC_F9,       KC_F12,      KC_PSCR,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            KC_NO,       KC_F5,       KC_F6,       KC_F7,       KC_F8,                MS_LEFT,     MS_DOWN,     MS_UP,       MS_RGHT,     KC_MUTE,
+            OSM(MOD_LCTL), OSM(MOD_LALT), OSM(MOD_LSFT), OSM(MOD_LGUI), KC_NO,        KC_F4,       KC_F5,       KC_F6,       KC_F11,      ALT_F4,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            CTL_ALT_DEL, KC_F9,       KC_F10,      KC_F11,      KC_F12,               KC_NO,       KC_BRID,     KC_BRIU,     KC_NO,       KC_NO,
+            KC_MPRV,     KC_MNXT,     KC_MPLY,     KC_MUTE,     KC_NO,                KC_F1,       KC_F2,       KC_F3,       KC_F10,      CTL_ALT_DEL,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-                                      KC_NO,       TO(_QWERTY), KC_NO,                MS_BTN1,     MS_BTN2,     KC_NO
+                                      KC_NO,       KC_NO,       KC_NO,                KC_NO,       KC_NO,       KC_NO
     ),
 };
 
@@ -635,13 +663,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #ifdef COMBO_ENABLE
 enum combos {
     _COMBO_CW_TOGGLE,
+    _COMBO_CTRL_BSPC,
+    _COMBO_CTRL_DEL,
     _COMBO_FN,
     _COMBO_CMD,
     _COMBO_CTRL,
     _COMBO_ALT,
-    _COMBO_CMD_SYM_LAYER,
-    _COMBO_CTRL_SYM_LAYER,
-    _COMBO_ALT_SYM_LAYER,
+    _COMBO_CMD_SYM_NUM_LAYER,
+    _COMBO_CTRL_SYM_NUM_LAYER,
+    _COMBO_ALT_SYM_NUM_LAYER,
     _COMBO_ESC,
     _COMBO_SEMI_COLON,
     _COMBO_PARANTHESES_LEFT,
@@ -654,8 +684,10 @@ enum combos {
     _COMBO_ARROW_BRACKET_RIGHT,
 };
 
-const uint16_t PROGMEM combo_cw_toggle[] = {KC_G, KC_H, COMBO_END};
-const uint16_t PROGMEM combo_fn[] = {TO(_EXTEND), TO(_SYM), COMBO_END};
+const uint16_t PROGMEM combo_cw_toggle[] = {KC_D, KC_K, COMBO_END};
+const uint16_t PROGMEM combo_ctrl_bspc[] = {KC_RGHT, KC_BSPC, COMBO_END};
+const uint16_t PROGMEM combo_ctrl_del[] = {SKIP_WORD_R, KC_DEL, COMBO_END};
+const uint16_t PROGMEM combo_fn[] = {TO(_EXTEND), TO(_SYM_NUM), COMBO_END};
 const uint16_t PROGMEM combo_ctrl[] = {KC_A, KC_S, COMBO_END};
 const uint16_t PROGMEM combo_alt[] = {KC_S, KC_D, COMBO_END};
 const uint16_t PROGMEM combo_cmd[] = {KC_D, KC_F, COMBO_END};
@@ -674,14 +706,16 @@ const uint16_t PROGMEM combo_arrow_bracket_left[] = {KC_0, KC_EQL, COMBO_END};
 const uint16_t PROGMEM combo_arrow_bracket_right[] = {KC_DOT, KC_SLSH, COMBO_END};
 
 combo_t key_combos[] = {
-    [_COMBO_CW_TOGGLE] = COMBO(combo_cw_toggle, TO(_FN)),
+    [_COMBO_CW_TOGGLE] = COMBO(combo_cw_toggle, CW_TOGG),
+    [_COMBO_CTRL_BSPC] = COMBO(combo_ctrl_bspc, C(KC_BSPC)),
+    [_COMBO_CTRL_DEL] = COMBO(combo_ctrl_del, C(KC_DEL)),
     [_COMBO_FN] = COMBO(combo_fn, TO(_FN)),
     [_COMBO_CTRL] = COMBO(combo_ctrl, OSM(MOD_LCTL)),
     [_COMBO_ALT] = COMBO(combo_alt, OSM(MOD_LALT)),
     [_COMBO_CMD] = COMBO(combo_cmd, OSM(MOD_LGUI)),
-    [_COMBO_CTRL_SYM_LAYER] = COMBO(combo_ctrl_sym_layer, OSM(MOD_LCTL)),
-    [_COMBO_ALT_SYM_LAYER] = COMBO(combo_alt_sym_layer, OSM(MOD_LALT)),
-    [_COMBO_CMD_SYM_LAYER] = COMBO(combo_cmd_sym_layer, OSM(MOD_LGUI)),
+    [_COMBO_CTRL_SYM_NUM_LAYER] = COMBO(combo_ctrl_sym_layer, OSM(MOD_LCTL)),
+    [_COMBO_ALT_SYM_NUM_LAYER] = COMBO(combo_alt_sym_layer, OSM(MOD_LALT)),
+    [_COMBO_CMD_SYM_NUM_LAYER] = COMBO(combo_cmd_sym_layer, OSM(MOD_LGUI)),
     [_COMBO_ESC] = COMBO(combo_esc, KC_ESC),
     [_COMBO_SEMI_COLON] = COMBO(combo_semi_colon, KC_SCLN),
     [_COMBO_PARANTHESES_LEFT] = COMBO(combo_parenteses_left, S(KC_9)),
