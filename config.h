@@ -48,4 +48,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #ifdef COMBO_ENABLE
 #define COMBO_TERM 50
+#define COMBO_SHOULD_TRIGGER
 #endif

@@ -470,6 +470,8 @@ enum layers {
     _SYM_NUM,
     _EXTEND,
     _FN,
+    _GAME,
+    _GAME_FN,
 };
 
 // ====================
@@ -653,7 +655,29 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             KC_MPRV,     KC_MNXT,     KC_MPLY,     KC_MUTE,     KC_NO,                KC_F1,       KC_F2,       KC_F3,       KC_F10,      CTL_ALT_DEL,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-                                      KC_NO,       KC_NO,       KC_NO,                KC_NO,       KC_NO,       KC_NO
+                                      KC_NO,       TO(_GAME),   KC_NO,                KC_NO,       KC_NO,       KC_NO
+    ),
+
+    [_GAME] = LAYOUT_split_3x5_3(
+        //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
+            KC_TAB,      KC_Q,        KC_W,       KC_E,       KC_R,                   KC_NO,       KC_NO,       KC_NO,       KC_NO,      KC_NO,
+        //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
+            KC_LCTL,     KC_A,        KC_S,       KC_D,       KC_F,                   KC_NO,       KC_NO,       KC_NO,       KC_NO,      KC_NO,
+        //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
+            KC_LSFT,     KC_Z,        KC_X,       KC_C,       KC_V,                   KC_NO,       KC_NO,       KC_NO,       KC_NO,      KC_NO,
+        //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
+                                      KC_NO,      MO(_GAME_FN), KC_SPC,               KC_NO,       TO(_QWERTY), KC_NO
+    ),
+
+    [_GAME_FN] = LAYOUT_split_3x5_3(
+        //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
+            KC_ESC,      KC_1,        KC_2,        KC_3,        KC_4,                 KC_NO,       KC_NO,       KC_NO,       KC_NO,      KC_NO,
+        //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
+            KC_LALT,     KC_G,        KC_M,        KC_T,        KC_I,                 KC_NO,       KC_NO,       KC_NO,       KC_NO,      KC_NO,
+        //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
+            KC_GRV,      KC_NO,       KC_NO,       KC_NO,       KC_NO,                KC_NO,       KC_NO,       KC_NO,       KC_NO,      KC_NO,
+        //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
+                                      KC_NO,       KC_NO,       KC_SPC,               KC_NO,       TO(_QWERTY), KC_NO
     ),
 };
 
@@ -696,12 +720,12 @@ const uint16_t PROGMEM combo_alt_sym_layer[] = {S(KC_MINS), KC_EQL, COMBO_END};
 const uint16_t PROGMEM combo_cmd_sym_layer[] = {KC_EQL, S(KC_SCLN), COMBO_END};
 const uint16_t PROGMEM combo_esc[] = {KC_J, KC_K, COMBO_END};
 const uint16_t PROGMEM combo_semi_colon[] = {KC_COMM, KC_DOT, COMBO_END};
-const uint16_t PROGMEM combo_parenteses_left[] = {KC_4, KC_5, COMBO_END};
-const uint16_t PROGMEM combo_parenteses_right[] = {KC_1, KC_2, COMBO_END};
-const uint16_t PROGMEM combo_curly_braces_left[] = {KC_5, KC_6, COMBO_END};
-const uint16_t PROGMEM combo_curly_braces_right[] = {KC_2, KC_3, COMBO_END};
-const uint16_t PROGMEM combo_square_bracket_left[] = {KC_6, KC_0, COMBO_END};
-const uint16_t PROGMEM combo_square_bracket_right[] = {KC_6, KC_0, COMBO_END};
+const uint16_t PROGMEM combo_square_bracket_left[] = {KC_4, KC_5, COMBO_END};
+const uint16_t PROGMEM combo_square_bracket_right[] = {KC_1, KC_2, COMBO_END};
+const uint16_t PROGMEM combo_parenteses_left[] = {KC_5, KC_6, COMBO_END};
+const uint16_t PROGMEM combo_parenteses_right[] = {KC_2, KC_3, COMBO_END};
+const uint16_t PROGMEM combo_curly_braces_left[] = {KC_6, KC_0, COMBO_END};
+const uint16_t PROGMEM combo_curly_braces_right[] = {KC_3, KC_DOT, COMBO_END};
 const uint16_t PROGMEM combo_arrow_bracket_left[] = {KC_0, KC_EQL, COMBO_END};
 const uint16_t PROGMEM combo_arrow_bracket_right[] = {KC_DOT, KC_SLSH, COMBO_END};
 
@@ -729,7 +753,7 @@ combo_t key_combos[] = {
 };
 
 bool combo_should_trigger(uint16_t combo_index, combo_t *combo, uint16_t keycode, keyrecord_t *record) {
-    /* Disable combo `SOME_COMBO_X` on layer `_LAYER_X` */
+    /* Disable combo `SOME_COMBO` on layer `_LAYER_A` */
     switch (combo_index) {
         case _COMBO_ARROW_BRACKET_RIGHT:
             if (layer_state_is(_QWERTY)) {

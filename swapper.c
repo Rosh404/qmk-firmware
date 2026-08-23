@@ -1,7 +1,8 @@
 #pragma once
 
 #include QMK_KEYBOARD_H
-
+// Credits to https://github.com/braindefender/wellum/blob/master/firmware/qmk/oneshot.h
+//
 // Implements cmd-tab like behaviour on a single key. On first tap of trigger
 // cmdish is held and tabish is tapped -- cmdish then remains held until some
 // other key is hit or released. For example:
