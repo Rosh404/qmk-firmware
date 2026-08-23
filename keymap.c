@@ -649,7 +649,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_FN] = LAYOUT_split_3x5_3(
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            KC_VOLD,     KC_VOLU,     KC_BRID,     KC_BRIU,     KC_NO,                KC_F7,       KC_F8,       KC_F9,       KC_F12,      KC_PSCR,
+            KC_VOLD,     KC_VOLU,     KC_BRID,     KC_BRIU,     QK_UNDERGLOW_TOGGLE,  KC_F7,       KC_F8,       KC_F9,       KC_F12,      KC_PSCR,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             OSM(MOD_LCTL), OSM(MOD_LALT), OSM(MOD_LSFT), OSM(MOD_LGUI), KC_NO,        KC_F4,       KC_F5,       KC_F6,       KC_F11,      ALT_F4,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
@@ -762,5 +762,32 @@ bool combo_should_trigger(uint16_t combo_index, combo_t *combo, uint16_t keycode
     }
 
     return true;
+}
+#endif
+
+#ifdef RGBLIGHT_ENABLE
+layer_state_t layer_state_set_user(layer_state_t state) {
+    switch (get_highest_layer(state)) {
+        case _QWERTY:
+            rgb_matrix_sethsv_noeeprom(0, 0, RGB_MATRIX_MAXIMUM_BRIGHTNESS);      // white
+            break;
+        case _SYM_NUM:
+            rgb_matrix_sethsv_noeeprom(128, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS);  // cyan
+            break;
+        case _EXTEND:
+            rgb_matrix_sethsv_noeeprom(21, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS);   // orange
+            break;
+        case _FN:
+            rgb_matrix_sethsv_noeeprom(43, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS);   // yellow
+            break;
+        case _GAME:
+            rgb_matrix_sethsv_noeeprom(85, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS);   // green
+            break;
+        case _GAME_FN:
+            rgb_matrix_sethsv_noeeprom(213, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS);  // purple
+            break;
+    }
+
+    return state;
 }
 #endif
