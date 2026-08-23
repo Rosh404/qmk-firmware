@@ -32,103 +32,126 @@ enum layers {
 };
 
 #ifdef OLED_ENABLE
-static uint32_t pacman_timer = 0;
-static uint32_t hello_timer = 0;
 
-static uint8_t pacman_x = 0;
-static bool pacman_mouth = false;
+static uint32_t scroll_timer = 0;
 
-static int8_t hello_x = 15;
-static uint8_t message_index = 0;
+// =====================================================
+// OLED SETTINGS
+// =====================================================
 
-#define PACMAN_SPEED     100
-#define PACMAN_END       20
-#define MESSAGE_SPEED    120
-#define MESSAGE_PAUSE    1000
+#define SCROLL_SPEED 120
+#define OLED_COLS    21
 
-static const char *messages[] = {
-    "HELLO WORLD",
-    "PING PONG!",
-    "READY_UP!",
-};
+// =====================================================
+// LEFT OLED TEXT
+// =====================================================
 
-#define MESSAGE_COUNT (sizeof(messages) / sizeof(messages[0]))
+#define LEFT_TEXT     "PING PONG!"
+#define LEFT_TEXT_LEN 10
+
+// =====================================================
+// RIGHT OLED TEXT
+// =====================================================
+
+#define RIGHT_TEXT     "HELLO WORLD!"
+#define RIGHT_TEXT_LEN 12
+
+// =====================================================
+// PING-PONG POSITIONS
+// =====================================================
+
+static int8_t left_x = 0;
+static int8_t left_dir = 1;
+
+static int8_t right_x = 0;
+static int8_t right_dir = 1;
+
+
+// =====================================================
+// OLED TASK
+// =====================================================
 
 bool oled_task_user(void) {
 
     // =====================================================
-    // PAC-MAN ANIMATION
+    // UPDATE TEXT ANIMATION
     // =====================================================
 
-    if (timer_elapsed32(pacman_timer) > PACMAN_SPEED) {
-        pacman_timer = timer_read32();
+    if (timer_elapsed32(scroll_timer) > SCROLL_SPEED) {
+        scroll_timer = timer_read32();
 
-        pacman_mouth = !pacman_mouth;
+        // -------------------------------------------------
+        // LEFT: PING PONG!
+        // -------------------------------------------------
 
-        pacman_x++;
+        left_x += left_dir;
 
-        if (pacman_x >= PACMAN_END) {
-            pacman_x = 0;
+        if (left_x <= 0) {
+            left_x = 0;
+            left_dir = 1;
+        }
+
+        if (left_x >= OLED_COLS - LEFT_TEXT_LEN) {
+            left_x = OLED_COLS - LEFT_TEXT_LEN;
+            left_dir = -1;
+        }
+
+
+        // -------------------------------------------------
+        // RIGHT: HELLO WORLD!
+        // -------------------------------------------------
+
+        right_x += right_dir;
+
+        if (right_x <= 0) {
+            right_x = 0;
+            right_dir = 1;
+        }
+
+        if (right_x >= OLED_COLS - RIGHT_TEXT_LEN) {
+            right_x = OLED_COLS - RIGHT_TEXT_LEN;
+            right_dir = -1;
         }
     }
 
-    // =====================================================
-    // MESSAGE ANIMATION
-    // =====================================================
-
-    if (timer_elapsed32(hello_timer) > MESSAGE_SPEED) {
-        hello_timer = timer_read32();
-
-        hello_x--;
-
-        uint8_t message_length = strlen(messages[message_index]);
-
-        if (hello_x < -message_length) {
-
-            // Next message
-            message_index++;
-
-            if (message_index >= MESSAGE_COUNT) {
-                message_index = 0;
-            }
-
-            // Start next message from right side
-            hello_x = 15;
-        }
-    }
 
     oled_clear();
 
+
     // =====================================================
-    // MASTER OLED - PAC-MAN
+    // LEFT / MASTER OLED
+    // PING PONG! + LAYER INFO
     // =====================================================
 
     if (is_keyboard_master()) {
 
-        // Pac-Man + dots
+        // -----------------------------
+        // PING PONG!
+        // -----------------------------
+
         oled_set_cursor(0, 1);
 
-        for (uint8_t i = 0; i < PACMAN_END; i++) {
+        for (uint8_t i = 0; i < OLED_COLS; i++) {
 
-            if (i == pacman_x) {
+            if (i >= left_x &&
+                i < left_x + LEFT_TEXT_LEN) {
 
-                if (pacman_mouth) {
-                    oled_write_P(PSTR(">"), false);
-                } else {
-                    oled_write_P(PSTR("C"), false);
-                }
-
-            } else if (i > pacman_x) {
-
-                oled_write_P(PSTR("."), false);
+                oled_write_char(
+                    LEFT_TEXT[i - left_x],
+                    false
+                );
 
             } else {
 
-                oled_write_P(PSTR(" "), false);
+                oled_write_char(' ', false);
             }
         }
 
-        // Layer information
+
+        // -----------------------------
+        // LAYER INFORMATION
+        // -----------------------------
+
         oled_set_cursor(0, 3);
 
         switch (get_highest_layer(layer_state)) {
@@ -156,20 +179,46 @@ bool oled_task_user(void) {
             case _GAME_FN:
                 oled_write_P(PSTR("GAME FN"), false);
                 break;
+
+            default:
+                oled_write_P(PSTR("UNKNOWN"), false);
+                break;
         }
 
+
     // =====================================================
-    // SECOND OLED - MESSAGES
+    // RIGHT / SLAVE OLED
+    // HELLO WORLD!
     // =====================================================
 
     } else {
-        oled_set_cursor(hello_x, 1);
-        oled_write(messages[message_index], false);
+
+        oled_set_cursor(0, 1);
+
+        for (uint8_t i = 0; i < OLED_COLS; i++) {
+
+            if (i >= right_x &&
+                i < right_x + RIGHT_TEXT_LEN) {
+
+                oled_write_char(
+                    RIGHT_TEXT[i - right_x],
+                    false
+                );
+
+            } else {
+
+                oled_write_char(' ', false);
+            }
+        }
     }
 
     return false;
 }
+
 #endif
+
+
+
 
 // ====================
 // MACROS
@@ -417,12 +466,12 @@ const uint16_t PROGMEM combo_alt_sym_layer[] = {S(KC_MINS), KC_EQL, COMBO_END};
 const uint16_t PROGMEM combo_cmd_sym_layer[] = {KC_EQL, S(KC_SCLN), COMBO_END};
 const uint16_t PROGMEM combo_esc[] = {KC_J, KC_K, COMBO_END};
 const uint16_t PROGMEM combo_semi_colon[] = {KC_COMM, KC_DOT, COMBO_END};
-const uint16_t PROGMEM combo_square_bracket_left[] = {KC_4, KC_5, COMBO_END};
-const uint16_t PROGMEM combo_square_bracket_right[] = {KC_1, KC_2, COMBO_END};
-const uint16_t PROGMEM combo_parenteses_left[] = {KC_5, KC_6, COMBO_END};
-const uint16_t PROGMEM combo_parenteses_right[] = {KC_2, KC_3, COMBO_END};
-const uint16_t PROGMEM combo_curly_braces_left[] = {KC_6, KC_0, COMBO_END};
-const uint16_t PROGMEM combo_curly_braces_right[] = {KC_3, KC_DOT, COMBO_END};
+const uint16_t PROGMEM combo_parenteses_left[] = {KC_4, KC_5, COMBO_END};
+const uint16_t PROGMEM combo_parenteses_right[] = {KC_1, KC_2, COMBO_END};
+const uint16_t PROGMEM combo_curly_braces_left[] = {KC_5, KC_6, COMBO_END};
+const uint16_t PROGMEM combo_curly_braces_right[] = {KC_2, KC_3, COMBO_END};
+const uint16_t PROGMEM combo_square_bracket_left[] = {KC_6, KC_0, COMBO_END};
+const uint16_t PROGMEM combo_square_bracket_right[] = {KC_3, KC_DOT, COMBO_END};
 const uint16_t PROGMEM combo_arrow_bracket_left[] = {KC_0, KC_EQL, COMBO_END};
 const uint16_t PROGMEM combo_arrow_bracket_right[] = {KC_DOT, KC_SLSH, COMBO_END};
 
