@@ -67,10 +67,6 @@ static int8_t right_x = 0;
 static int8_t right_dir = 1;
 
 
-// =====================================================
-// OLED TASK
-// =====================================================
-
 bool oled_task_user(void) {
 
     // =====================================================
@@ -117,11 +113,6 @@ bool oled_task_user(void) {
 
     oled_clear();
 
-
-    // =====================================================
-    // LEFT / MASTER OLED
-    // PING PONG! + LAYER INFO
-    // =====================================================
 
     if (is_keyboard_master()) {
 
@@ -335,16 +326,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return true;
 }
 
-#ifdef TAP_DANCE_ENABLE
 // Tap Dance declarations
 enum {
-    TD_SHIFT_CAPS,
+    TD_QUOTE,
+    TD_SLASH,
 };
+#ifdef TAP_DANCE_ENABLE
 
 // Tap Dance definitions
 tap_dance_action_t tap_dance_actions[] = {
-    // Tap once for Escape, twice for Caps Lock
-    [TD_SHIFT_CAPS] = ACTION_TAP_DANCE_DOUBLE(KC_LSFT, KC_CAPS),
+    [TD_QUOTE] = ACTION_TAP_DANCE_DOUBLE(KC_QUOT, S(KC_QUOT)),
+    [TD_SLASH] = ACTION_TAP_DANCE_DOUBLE(KC_SLSH, S(KC_SLSH)),
 };
 
 // Add tap dance item to your keymap in place of a keycode
@@ -367,7 +359,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             KC_Z,        KC_X,        KC_C,        KC_V,        KC_B,                 KC_N,        KC_M,        KC_COMM,     KC_DOT,      KC_SLSH,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-                                           KC_NO,  MO(_EXTEND), KC_SPC,               OSM(MOD_LSFT),  TO(_SYM_NUM),   KC_NO
+                                           TO(_GAME),  MO(_EXTEND), KC_SPC,           OSM(MOD_LSFT),  TO(_SYM_NUM),   MO(_FN)
 
     ),
 
@@ -384,13 +376,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_EXTEND] = LAYOUT_split_3x5_3(
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            KC_ESC,      CTRL_CMD_L,  SW_WIN,      SW_TAB,      CTRL_CMD_R,           KC_HOME,     KC_PGDN,     KC_PGUP,     KC_END,      KC_INSERT,
+            KC_ESC,      CTRL_CMD_L,  SW_TAB,      SW_WIN,      CTRL_CMD_R,           KC_HOME,     KC_PGDN,     KC_PGUP,     KC_END,      KC_INSERT,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             OSM(MOD_LCTL), OSM(MOD_LALT), OSM(MOD_LSFT), OSM(MOD_LGUI), KC_TAB,       KC_LEFT,     KC_DOWN,     KC_UP,       KC_RGHT,     KC_BSPC,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             UNDO,        CUT,         COPY,        PASTE,       REDO,                 SKIP_WORD_L, SEL_WORD_L,  SEL_WORD_R,  SKIP_WORD_R, KC_DEL,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-                                      KC_NO,       KC_NO,       KC_NO,                KC_ENT,      MO(_FN),     KC_NO
+                                      KC_NO,       KC_NO,       KC_NO,                KC_ENT,      KC_NO,       KC_NO
     ),
 
     [_FN] = LAYOUT_split_3x5_3(
@@ -401,18 +393,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             KC_MPRV,     KC_MNXT,     KC_MPLY,     KC_MUTE,     KC_NO,                KC_F1,       KC_F2,       KC_F3,       KC_F10,      CTL_ALT_DEL,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-                                      KC_NO,       TO(_GAME),   KC_NO,                KC_NO,       KC_NO,       KC_NO
+                                      KC_NO,       KC_NO,       KC_NO,                KC_NO,       KC_NO,       KC_NO
     ),
 
     [_GAME] = LAYOUT_split_3x5_3(
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            KC_TAB,      KC_Q,        KC_W,       KC_E,       KC_R,                   KC_NO,       KC_NO,       KC_NO,       KC_NO,      KC_NO,
+            KC_TAB,      KC_Q,        KC_W,       KC_E,       KC_R,                   KC_NO,       KC_NO,       KC_NO,       KC_NO,      KC_PSCR,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             KC_LCTL,     KC_A,        KC_S,       KC_D,       KC_F,                   KC_NO,       KC_NO,       KC_NO,       KC_NO,      KC_NO,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             KC_LSFT,     KC_Z,        KC_X,       KC_C,       KC_V,                   KC_NO,       KC_NO,       KC_NO,       KC_NO,      KC_NO,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-                                      KC_NO,      MO(_GAME_FN), KC_SPC,               KC_NO,       TO(_QWERTY), KC_NO
+                                    TO(_QWERTY), MO(_GAME_FN), KC_SPC,                KC_NO,       TO(_QWERTY), KC_NO
     ),
 
     [_GAME_FN] = LAYOUT_split_3x5_3(
@@ -466,14 +458,14 @@ const uint16_t PROGMEM combo_alt_sym_layer[] = {S(KC_MINS), KC_EQL, COMBO_END};
 const uint16_t PROGMEM combo_cmd_sym_layer[] = {KC_EQL, S(KC_SCLN), COMBO_END};
 const uint16_t PROGMEM combo_esc[] = {KC_J, KC_K, COMBO_END};
 const uint16_t PROGMEM combo_semi_colon[] = {KC_COMM, KC_DOT, COMBO_END};
-const uint16_t PROGMEM combo_parenteses_left[] = {KC_4, KC_5, COMBO_END};
-const uint16_t PROGMEM combo_parenteses_right[] = {KC_1, KC_2, COMBO_END};
-const uint16_t PROGMEM combo_curly_braces_left[] = {KC_5, KC_6, COMBO_END};
-const uint16_t PROGMEM combo_curly_braces_right[] = {KC_2, KC_3, COMBO_END};
-const uint16_t PROGMEM combo_square_bracket_left[] = {KC_6, KC_0, COMBO_END};
-const uint16_t PROGMEM combo_square_bracket_right[] = {KC_3, KC_DOT, COMBO_END};
-const uint16_t PROGMEM combo_arrow_bracket_left[] = {KC_0, KC_EQL, COMBO_END};
-const uint16_t PROGMEM combo_arrow_bracket_right[] = {KC_DOT, KC_SLSH, COMBO_END};
+const uint16_t PROGMEM combo_parenteses_left[] = {S(KC_7), S(KC_BSLS), COMBO_END};
+const uint16_t PROGMEM combo_parenteses_right[] = {KC_7, KC_8, COMBO_END};
+const uint16_t PROGMEM combo_curly_braces_left[] = {S(KC_SCLN), S(KC_2), COMBO_END};
+const uint16_t PROGMEM combo_curly_braces_right[] = {KC_4, KC_5, COMBO_END};
+const uint16_t PROGMEM combo_square_bracket_left[] = {S(KC_5), S(KC_3), COMBO_END};
+const uint16_t PROGMEM combo_square_bracket_right[] = {KC_1, KC_2, COMBO_END};
+const uint16_t PROGMEM combo_arrow_bracket_left[] = {KC_5, KC_6, COMBO_END};
+const uint16_t PROGMEM combo_arrow_bracket_right[] = {KC_6, KC_0, COMBO_END};
 
 combo_t key_combos[] = {
     [_COMBO_CW_TOGGLE] = COMBO(combo_cw_toggle, CW_TOGG),
@@ -521,10 +513,10 @@ layer_state_t layer_state_set_user(layer_state_t state) {
             rgb_matrix_sethsv_noeeprom(128, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS);  // cyan
             break;
         case _EXTEND:
-            rgb_matrix_sethsv_noeeprom(21, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS);   // orange
+            rgb_matrix_sethsv_noeeprom(11, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS);   // orange
             break;
         case _FN:
-            rgb_matrix_sethsv_noeeprom(43, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS);   // yellow
+            rgb_matrix_sethsv_noeeprom(0, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS);    // red
             break;
         case _GAME:
             rgb_matrix_sethsv_noeeprom(85, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS);   // green
