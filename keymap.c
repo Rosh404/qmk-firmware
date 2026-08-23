@@ -359,7 +359,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             KC_Z,        KC_X,        KC_C,        KC_V,        KC_B,                 KC_N,        KC_M,        KC_COMM,     KC_DOT,      KC_SLSH,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-                                           TO(_GAME),  MO(_EXTEND), KC_SPC,           OSM(MOD_LSFT),  TO(_SYM_NUM),   MO(_FN)
+                                           TO(_GAME),  MO(_EXTEND), KC_SPC,           OSM(MOD_LSFT),  MO(_SYM_NUM),   MO(_FN)
 
     ),
 
@@ -371,7 +371,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             KC_BSLS,     S(KC_6),     S(KC_4),     S(KC_5),     S(KC_3),              KC_1,        KC_2,        KC_3,        KC_DOT,      KC_SLSH,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-                                      KC_NO,       MO(_EXTEND), KC_SPC,               KC_NO,       TO(_QWERTY), KC_NO
+                                      KC_NO,       MO(_EXTEND), KC_SPC,               KC_NO,       KC_NO,       KC_NO
     ),
 
     [_EXTEND] = LAYOUT_split_3x5_3(
