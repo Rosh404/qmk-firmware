@@ -5,8 +5,8 @@ TAP_DANCE_ENABLE = no
 RGBLIGHT_ENABLE = yes
 RGB_MATRIX_ENABLE = yes
 
-WPM_ENABLE = yes  # Word per minute counter (WPM)
-OLED_ENABLE = no # OLEDs
+OLED_ENABLE = yes # OLEDs
+WPM_ENABLE = no  # Word per minute counter (WPM)
 CONSOLE_ENABLE = no
 COMMAND_ENABLE = no
 
