@@ -232,6 +232,10 @@ enum custom_keycodes {
     PASTE,
     SW_WIN,  // Switch to next window         (alt-tab)
     SW_TAB,  // Switch to next browser tab    (ctrl-tab)
+    OSM_CTL_TOGG,
+    OSM_ALT_TOGG,
+    OSM_SFT_TOGG,
+    OSM_GUI_TOGG,
 };
 
 bool sw_win_active = false;
@@ -245,6 +249,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (!record->event.pressed) {
         return true;
     }
+
+    uint8_t mods = get_oneshot_mods();
 
     switch (keycode) {
         case CTRL_CMD_L:
@@ -319,6 +325,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             tap_code(KC_V);
             unregister_code(KC_LCTL);
             return false;
+        case OSM_CTL_TOGG:
+            mods ^= MOD_BIT(KC_LCTL);
+            set_oneshot_mods(mods);
+            return false;
+        case OSM_ALT_TOGG:
+            mods ^= MOD_BIT(KC_LALT);
+            set_oneshot_mods(mods);
+            return false;
+        case OSM_SFT_TOGG:
+            mods ^= MOD_BIT(KC_LSFT);
+            set_oneshot_mods(mods);
+            return false;
+        case OSM_GUI_TOGG:
+            mods ^= MOD_BIT(KC_LGUI);
+            set_oneshot_mods(mods);
+            return false;
     }
 
     return true;
@@ -363,9 +385,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_SYM_NUM] = LAYOUT_split_3x5_3(
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            S(KC_GRV),   S(KC_8),     S(KC_1),     S(KC_7),     S(KC_BSLS),           KC_7,        KC_8,        KC_9,        KC_MINS,     S(KC_EQL),
+            KC_GRV,      S(KC_8),     S(KC_1),     S(KC_7),     S(KC_BSLS),           KC_7,        KC_8,        KC_9,        KC_MINS,     S(KC_EQL),
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            KC_GRV,      S(KC_MINS),  KC_EQL,      S(KC_SCLN),  S(KC_2),              KC_4,        KC_5,        KC_6,        KC_0,        KC_EQL,
+            S(KC_GRV),   S(KC_MINS),  KC_EQL,      S(KC_SCLN),  S(KC_2),              KC_4,        KC_5,        KC_6,        KC_0,        KC_EQL,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             KC_BSLS,     S(KC_6),     S(KC_4),     S(KC_5),     S(KC_3),              KC_1,        KC_2,        KC_3,        KC_DOT,      KC_SLSH,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
@@ -376,7 +398,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             KC_ESC,      CTRL_CMD_L,  CTRL_CMD_R,  SW_WIN,      SW_TAB,               KC_HOME,     KC_PGDN,     KC_PGUP,     KC_END,      KC_INSERT,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            OSM(MOD_LCTL), OSM(MOD_LALT), OSM(MOD_LSFT), OSM(MOD_LGUI), KC_TAB,       KC_LEFT,     KC_DOWN,     KC_UP,       KC_RGHT,     KC_BSPC,
+            OSM_CTL_TOGG, OSM_ALT_TOGG, OSM_GUI_TOGG, OSM_SFT_TOGG, KC_TAB,           KC_LEFT,     KC_DOWN,     KC_UP,       KC_RGHT,     KC_BSPC,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             UNDO,        CUT,         COPY,        PASTE,       REDO,                 SKIP_WORD_L, SEL_WORD_L,  SEL_WORD_R,  SKIP_WORD_R, KC_DEL,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
@@ -387,7 +409,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             KC_VOLD,     KC_VOLU,     KC_BRID,     KC_BRIU,     UG_TOGG,              KC_F7,       KC_F8,       KC_F9,       KC_F12,      KC_PSCR,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            OSM(MOD_LCTL), OSM(MOD_LALT), OSM(MOD_LSFT), OSM(MOD_LGUI), KC_NO,        KC_F4,       KC_F5,       KC_F6,       KC_F11,      ALT_F4,
+            OSM(MOD_LCTL), OSM(MOD_LALT), OSM(MOD_LGUI), OSM(MOD_LSFT), KC_NO,        KC_F4,       KC_F5,       KC_F6,       KC_F11,      ALT_F4,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             KC_MPRV,     KC_MNXT,     KC_MPLY,     KC_MUTE,     KC_NO,                KC_F1,       KC_F2,       KC_F3,       KC_F10,      CTL_ALT_DEL,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
@@ -469,11 +491,9 @@ combo_t key_combos[] = {
     [_COMBO_CTRL_BSPC] = COMBO(combo_ctrl_bspc, C(KC_BSPC)),
     [_COMBO_CTRL_DEL] = COMBO(combo_ctrl_del, C(KC_DEL)),
     [_COMBO_FN] = COMBO(combo_fn, TO(_FN)),
-    [_COMBO_CTRL] = COMBO(combo_ctrl, OSM(MOD_LCTL)),
-    [_COMBO_ALT] = COMBO(combo_alt, OSM(MOD_LALT)),
-    [_COMBO_CMD] = COMBO(combo_cmd, OSM(MOD_LGUI)),
-    [_COMBO_CTRL_SYM_NUM_LAYER] = COMBO(combo_ctrl_sym_layer, OSM(MOD_LCTL)),
-    [_COMBO_ALT_SYM_NUM_LAYER] = COMBO(combo_alt_sym_layer, OSM(MOD_LALT)),
+    [_COMBO_CTRL] = COMBO(combo_ctrl, OSM_CTL_TOGG),
+    [_COMBO_ALT] = COMBO(combo_alt, OSM_ALT_TOGG),
+    [_COMBO_CMD] = COMBO(combo_cmd, OSM_GUI_TOGG),
     [_COMBO_ESC] = COMBO(combo_esc, KC_ESC),
     [_COMBO_SEMI_COLON] = COMBO(combo_semi_colon, KC_SCLN),
     [_COMBO_PARANTHESES_LEFT] = COMBO(combo_parenteses_left, S(KC_9)),
@@ -558,6 +578,24 @@ bool rgb_matrix_indicators_user(void) {
             rgb_matrix_set_color(20, 0, 0, 0); // X off
             rgb_matrix_set_color(15, 0, 0, 0); // C off
         }
+    }
+
+    uint8_t oneshot_mods = get_oneshot_mods();
+
+    if (oneshot_mods & MOD_BIT(KC_LCTL)) {
+        rgb_matrix_set_color(22, 0, RGB_MATRIX_MAXIMUM_BRIGHTNESS, 0);
+    }
+
+    if (oneshot_mods & MOD_BIT(KC_LALT)) {
+        rgb_matrix_set_color(19, 0, RGB_MATRIX_MAXIMUM_BRIGHTNESS, 0);
+    }
+
+    if (oneshot_mods & MOD_BIT(KC_LGUI)) {
+        rgb_matrix_set_color(16, 0, RGB_MATRIX_MAXIMUM_BRIGHTNESS, 0);
+    }
+
+    if (oneshot_mods & MOD_BIT(KC_LSFT)) {
+        rgb_matrix_set_color(11, 0, RGB_MATRIX_MAXIMUM_BRIGHTNESS, 0);
     }
 
     return false;
