@@ -409,7 +409,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             KC_VOLD,     KC_VOLU,     KC_BRID,     KC_BRIU,     UG_TOGG,              KC_F7,       KC_F8,       KC_F9,       KC_F12,      KC_PSCR,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            OSM(MOD_LCTL), OSM(MOD_LALT), OSM(MOD_LGUI), OSM(MOD_LSFT), KC_NO,        KC_F4,       KC_F5,       KC_F6,       KC_F11,      ALT_F4,
+            OSM_CTL_TOGG, OSM_ALT_TOGG, OSM_GUI_TOGG, OSM_SFT_TOGG, KC_NO,            KC_F4,       KC_F5,       KC_F6,       KC_F11,      ALT_F4,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             KC_MPRV,     KC_MNXT,     KC_MPLY,     KC_MUTE,     KC_NO,                KC_F1,       KC_F2,       KC_F3,       KC_F10,      CTL_ALT_DEL,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
@@ -524,30 +524,30 @@ void keyboard_post_init_user(void) {
 }
 
 // 1. Set the base color
-layer_state_t layer_state_set_user(layer_state_t state) {
-    switch (get_highest_layer(state)) {
-        case _QWERTY:
-            rgb_matrix_sethsv_noeeprom(0, 0, 0);                                  // no color
-            break;
-        case _SYM_NUM:
-            rgb_matrix_sethsv_noeeprom(128, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS);  // cyan
-            break;
-        case _EXTEND:
-            rgb_matrix_sethsv_noeeprom(11, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS);   // orange
-            break;
-        case _FN:
-            rgb_matrix_sethsv_noeeprom(43, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS);    // red
-            break;
-        case _GAME:
-            rgb_matrix_sethsv_noeeprom(85, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS);   // green
-            break;
-        case _GAME_FN:
-            rgb_matrix_sethsv_noeeprom(213, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS);  // purple
-            break;
-    }
-
-    return state;
-}
+// layer_state_t layer_state_set_user(layer_state_t state) {
+//     switch (get_highest_layer(state)) {
+//         case _QWERTY:
+//             rgb_matrix_sethsv_noeeprom(0, 0, 0);                                  // no color
+//             break;
+//         case _SYM_NUM:
+//             rgb_matrix_sethsv_noeeprom(128, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS);  // cyan
+//             break;
+//         case _EXTEND:
+//             rgb_matrix_sethsv_noeeprom(11, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS);   // orange
+//             break;
+//         case _FN:
+//             rgb_matrix_sethsv_noeeprom(43, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS);    // red
+//             break;
+//         case _GAME:
+//             rgb_matrix_sethsv_noeeprom(85, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS);   // green
+//             break;
+//         case _GAME_FN:
+//             rgb_matrix_sethsv_noeeprom(213, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS);  // purple
+//             break;
+//     }
+//
+//     return state;
+// }
 
 // 2. Set per key rgb
 bool rgb_matrix_indicators_user(void) {
@@ -555,16 +555,24 @@ bool rgb_matrix_indicators_user(void) {
         case _QWERTY:
             break;
         case _SYM_NUM:
+            rgb_matrix_set_color(40, 0, 255, 255);
             break;
         case _EXTEND:
-            rgb_matrix_set_color(33, RGB_MATRIX_MAXIMUM_BRIGHTNESS, 255, 0); // ENTER key
-            rgb_matrix_set_color(23, RGB_MATRIX_MAXIMUM_BRIGHTNESS, 0, 0); // ESC key
+            rgb_matrix_set_color(13, 255, 128, 0); // LAYER key
+            rgb_matrix_set_color(23, 80, 0, 0); // ESC key
+            rgb_matrix_set_color(33, 80, 255, 0); // ENTER key
+            rgb_matrix_set_color(49, 255, 100, 0); // BACKSPACE key
+            rgb_matrix_set_color(48, 80, 0, 0); // DEL key
+            rgb_matrix_set_color(8, 0, 255, 255); // TAB key
             break;
         case _FN:
+            rgb_matrix_set_color(41, 255, 20, 147);
             break;
         case _GAME:
+            rgb_matrix_set_color(14, 80, 255, 0);
             break;
         case _GAME_FN:
+            rgb_matrix_set_color(13, 255, 0, 255);
             break;
     }
 
@@ -572,11 +580,11 @@ bool rgb_matrix_indicators_user(void) {
     // Blinking rbg light to indicate that caps word will be toggled off in few seconds.
     if (is_caps_word_on()) {
         if ((timer_read() / 500) % 2) {
-            rgb_matrix_set_color(20, 0, RGB_MATRIX_MAXIMUM_BRIGHTNESS, 0); // X - green
-            rgb_matrix_set_color(15, 0, RGB_MATRIX_MAXIMUM_BRIGHTNESS, 0); // C - green
+            rgb_matrix_set_color(20, 0, RGB_MATRIX_MAXIMUM_BRIGHTNESS, 0);
+            rgb_matrix_set_color(15, 0, RGB_MATRIX_MAXIMUM_BRIGHTNESS, 0);
         } else {
-            rgb_matrix_set_color(20, 0, 0, 0); // X off
-            rgb_matrix_set_color(15, 0, 0, 0); // C off
+            rgb_matrix_set_color(20, 0, 0, 0);
+            rgb_matrix_set_color(15, 0, 0, 0);
         }
     }
 
