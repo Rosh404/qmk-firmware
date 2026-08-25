@@ -31,6 +31,7 @@ enum layers {
     _GAME_FN,
 };
 
+
 #ifdef OLED_ENABLE
 
 static uint32_t scroll_timer = 0;
@@ -208,9 +209,6 @@ bool oled_task_user(void) {
 
 #endif
 
-
-
-
 // ====================
 // MACROS
 // ====================
@@ -376,7 +374,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_EXTEND] = LAYOUT_split_3x5_3(
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            KC_ESC,      CTRL_CMD_L,  SW_TAB,      SW_WIN,      CTRL_CMD_R,           KC_HOME,     KC_PGDN,     KC_PGUP,     KC_END,      KC_INSERT,
+            KC_ESC,      CTRL_CMD_L,  CTRL_CMD_R,  SW_WIN,      SW_TAB,               KC_HOME,     KC_PGDN,     KC_PGUP,     KC_END,      KC_INSERT,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             OSM(MOD_LCTL), OSM(MOD_LALT), OSM(MOD_LSFT), OSM(MOD_LGUI), KC_TAB,       KC_LEFT,     KC_DOWN,     KC_UP,       KC_RGHT,     KC_BSPC,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
@@ -387,7 +385,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_FN] = LAYOUT_split_3x5_3(
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            KC_VOLD,     KC_VOLU,     KC_BRID,     KC_BRIU,     QK_UNDERGLOW_TOGGLE,  KC_F7,       KC_F8,       KC_F9,       KC_F12,      KC_PSCR,
+            KC_VOLD,     KC_VOLU,     KC_BRID,     KC_BRIU,     UG_TOGG,              KC_F7,       KC_F8,       KC_F9,       KC_F12,      KC_PSCR,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             OSM(MOD_LCTL), OSM(MOD_LALT), OSM(MOD_LSFT), OSM(MOD_LGUI), KC_NO,        KC_F4,       KC_F5,       KC_F6,       KC_F11,      ALT_F4,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
@@ -446,7 +444,7 @@ enum combos {
     _COMBO_ARROW_BRACKET_RIGHT,
 };
 
-const uint16_t PROGMEM combo_cw_toggle[] = {KC_D, KC_K, COMBO_END};
+const uint16_t PROGMEM combo_cw_toggle[] = {KC_X, KC_C, COMBO_END};
 const uint16_t PROGMEM combo_ctrl_bspc[] = {KC_RGHT, KC_BSPC, COMBO_END};
 const uint16_t PROGMEM combo_ctrl_del[] = {SKIP_WORD_R, KC_DEL, COMBO_END};
 const uint16_t PROGMEM combo_fn[] = {TO(_EXTEND), TO(_SYM_NUM), COMBO_END};
@@ -455,17 +453,16 @@ const uint16_t PROGMEM combo_alt[] = {KC_S, KC_D, COMBO_END};
 const uint16_t PROGMEM combo_cmd[] = {KC_D, KC_F, COMBO_END};
 const uint16_t PROGMEM combo_ctrl_sym_layer[] = {KC_GRV, S(KC_MINS), COMBO_END};
 const uint16_t PROGMEM combo_alt_sym_layer[] = {S(KC_MINS), KC_EQL, COMBO_END};
-const uint16_t PROGMEM combo_cmd_sym_layer[] = {KC_EQL, S(KC_SCLN), COMBO_END};
 const uint16_t PROGMEM combo_esc[] = {KC_J, KC_K, COMBO_END};
 const uint16_t PROGMEM combo_semi_colon[] = {KC_COMM, KC_DOT, COMBO_END};
-const uint16_t PROGMEM combo_parenteses_left[] = {S(KC_7), S(KC_BSLS), COMBO_END};
-const uint16_t PROGMEM combo_parenteses_right[] = {KC_7, KC_8, COMBO_END};
-const uint16_t PROGMEM combo_curly_braces_left[] = {S(KC_SCLN), S(KC_2), COMBO_END};
-const uint16_t PROGMEM combo_curly_braces_right[] = {KC_4, KC_5, COMBO_END};
-const uint16_t PROGMEM combo_square_bracket_left[] = {S(KC_5), S(KC_3), COMBO_END};
-const uint16_t PROGMEM combo_square_bracket_right[] = {KC_1, KC_2, COMBO_END};
-const uint16_t PROGMEM combo_arrow_bracket_left[] = {KC_5, KC_6, COMBO_END};
-const uint16_t PROGMEM combo_arrow_bracket_right[] = {KC_6, KC_0, COMBO_END};
+const uint16_t PROGMEM combo_parenteses_left[] = {S(KC_SCLN), S(KC_2), COMBO_END};
+const uint16_t PROGMEM combo_parenteses_right[] = {KC_4, KC_5, COMBO_END};
+const uint16_t PROGMEM combo_curly_braces_left[] = {S(KC_5), S(KC_3), COMBO_END};
+const uint16_t PROGMEM combo_curly_braces_right[] = {KC_1, KC_2, COMBO_END};
+const uint16_t PROGMEM combo_square_bracket_left[] = {S(KC_7), S(KC_BSLS), COMBO_END};
+const uint16_t PROGMEM combo_square_bracket_right[] = {KC_7, KC_8, COMBO_END};
+const uint16_t PROGMEM combo_arrow_bracket_left[] = {KC_EQL, S(KC_SCLN), COMBO_END};
+const uint16_t PROGMEM combo_arrow_bracket_right[] = {KC_5, KC_6, COMBO_END};
 
 combo_t key_combos[] = {
     [_COMBO_CW_TOGGLE] = COMBO(combo_cw_toggle, CW_TOGG),
@@ -477,7 +474,6 @@ combo_t key_combos[] = {
     [_COMBO_CMD] = COMBO(combo_cmd, OSM(MOD_LGUI)),
     [_COMBO_CTRL_SYM_NUM_LAYER] = COMBO(combo_ctrl_sym_layer, OSM(MOD_LCTL)),
     [_COMBO_ALT_SYM_NUM_LAYER] = COMBO(combo_alt_sym_layer, OSM(MOD_LALT)),
-    [_COMBO_CMD_SYM_NUM_LAYER] = COMBO(combo_cmd_sym_layer, OSM(MOD_LGUI)),
     [_COMBO_ESC] = COMBO(combo_esc, KC_ESC),
     [_COMBO_SEMI_COLON] = COMBO(combo_semi_colon, KC_SCLN),
     [_COMBO_PARANTHESES_LEFT] = COMBO(combo_parenteses_left, S(KC_9)),
@@ -490,24 +486,28 @@ combo_t key_combos[] = {
     [_COMBO_ARROW_BRACKET_RIGHT] = COMBO(combo_arrow_bracket_right, S(KC_DOT)),
 };
 
-bool combo_should_trigger(uint16_t combo_index, combo_t *combo, uint16_t keycode, keyrecord_t *record) {
-    /* Disable combo `SOME_COMBO` on layer `_LAYER_A` */
-    switch (combo_index) {
-        case _COMBO_ARROW_BRACKET_RIGHT:
-            if (layer_state_is(_QWERTY)) {
-                return false;
-            }
-    }
-
-    return true;
-}
 #endif
 
-#ifdef RGBLIGHT_ENABLE
+
+#ifdef RGB_MATRIX_ENABLE
+
+// Diagram of per-key LEDs when viewed from above:
+//  23  18  17  10  9       36  37  44  45  50
+//  22  19  16  11  8       35  38  43  46  49
+//  21  20  15  12  7       34  39  42  47  48
+//           14  13  6       33  40  41
+
+
+// Disable initial rgb light when plugged in for the first time (default is red)
+void keyboard_post_init_user(void) {
+    rgb_matrix_sethsv_noeeprom(0, 0, 0);
+}
+
+// 1. Set the base color
 layer_state_t layer_state_set_user(layer_state_t state) {
     switch (get_highest_layer(state)) {
         case _QWERTY:
-            rgb_matrix_sethsv_noeeprom(0, 0, RGB_MATRIX_MAXIMUM_BRIGHTNESS);      // white
+            rgb_matrix_sethsv_noeeprom(0, 0, 0);                                  // no color
             break;
         case _SYM_NUM:
             rgb_matrix_sethsv_noeeprom(128, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS);  // cyan
@@ -516,7 +516,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
             rgb_matrix_sethsv_noeeprom(11, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS);   // orange
             break;
         case _FN:
-            rgb_matrix_sethsv_noeeprom(0, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS);    // red
+            rgb_matrix_sethsv_noeeprom(43, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS);    // red
             break;
         case _GAME:
             rgb_matrix_sethsv_noeeprom(85, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS);   // green
@@ -528,4 +528,39 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 
     return state;
 }
+
+// 2. Set per key rgb
+bool rgb_matrix_indicators_user(void) {
+    switch (get_highest_layer(layer_state)) {
+        case _QWERTY:
+            break;
+        case _SYM_NUM:
+            break;
+        case _EXTEND:
+            rgb_matrix_set_color(33, RGB_MATRIX_MAXIMUM_BRIGHTNESS, 255, 0); // ENTER key
+            rgb_matrix_set_color(23, RGB_MATRIX_MAXIMUM_BRIGHTNESS, 0, 0); // ESC key
+            break;
+        case _FN:
+            break;
+        case _GAME:
+            break;
+        case _GAME_FN:
+            break;
+    }
+
+
+    // Blinking rbg light to indicate that caps word will be toggled off in few seconds.
+    if (is_caps_word_on()) {
+        if ((timer_read() / 500) % 2) {
+            rgb_matrix_set_color(20, 0, RGB_MATRIX_MAXIMUM_BRIGHTNESS, 0); // X - green
+            rgb_matrix_set_color(15, 0, RGB_MATRIX_MAXIMUM_BRIGHTNESS, 0); // C - green
+        } else {
+            rgb_matrix_set_color(20, 0, 0, 0); // X off
+            rgb_matrix_set_color(15, 0, 0, 0); // C off
+        }
+    }
+
+    return false;
+}
+
 #endif

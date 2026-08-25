@@ -21,9 +21,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 // General
-#define TAPPING_TOGGLE 2
+/* Select hand configuration */
+#define MASTER_LEFT
+// #define MASTER_RIGHT
+// #define EE_HANDS
+
+// This sends whether or not ctrl, shift, etc. are held to the secondary half of
+// the keyboard. Note that it seems to "break" one half entirely unless BOTH
+// halves have this enabled.
+#define SPLIT_MODS_ENABLE
+
+// Allow the current layer to be synced between the halves.
+#define SPLIT_LAYER_STATE_ENABLE
+
+// Allow the state of caps lock, num lock, etc. to be synced between the halves.
+#define SPLIT_LED_STATE_ENABLE
+
+// #define RGBLED_SPLIT { 27, 27 }
 
 #ifdef TAP_DANCE_ENABLE
+#define TAPPING_TOGGLE 2
 #define TAPPING_TERM 175
 #define TAPPING_TERM_PER_KEY
 #endif
@@ -33,6 +50,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 #ifdef OLED_ENABLE
+#define SPLIT_OLED_ENABLE
+
 // WPM-responsive animation stuff here
 #define IDLE_FRAMES 5
 #define IDLE_SPEED 35 // below this wpm value your animation will idle
@@ -51,10 +70,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define COMBO_SHOULD_TRIGGER
 #endif
 
-#ifdef RGBLIGHT_ENABLE
-#define RGB_MATRIX_STARTUP_MODE RGB_MATRIX_SOLID_COLOR
+#ifdef RGB_MATRIX_ENABLE
+#define RGB_MATRIX_STARTUP_MODE RGB_MATRIX_NONE
+#define RGB_MATRIX_DEFAULT_HUE 0
 #undef RGB_MATRIX_MAXIMUM_BRIGHTNESS
 #define RGB_MATRIX_MAXIMUM_BRIGHTNESS 80 // limits maximum brightness of LEDs to 150 out of 255. Higher may cause the controller to crash.
+
+// Turn off RGB when USB is suspended
+#define RGB_MATRIX_SLEEP
+
+// #    define RGBLED_NUM 54  // Number of LEDs
+// #    define DRIVER_LED_TOTAL 48
+// #    define RGB_MATRIX_SPLIT { 27, 27 }
 
 /* Disable the animations you don't want/need.  You will need to disable a good number of these    *
  * because they take up a lot of space.  Disable until you can successfully compile your firmware. */
