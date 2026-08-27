@@ -350,6 +350,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 enum {
     TD_QUOTE,
     TD_SLASH,
+    TAB_ALT_F4
 };
 #ifdef TAP_DANCE_ENABLE
 
@@ -357,6 +358,7 @@ enum {
 tap_dance_action_t tap_dance_actions[] = {
     [TD_QUOTE] = ACTION_TAP_DANCE_DOUBLE(KC_QUOT, S(KC_QUOT)),
     [TD_SLASH] = ACTION_TAP_DANCE_DOUBLE(KC_SLSH, S(KC_SLSH)),
+    [TAB_ALT_F4] = ACTION_TAP_DANCE_DOUBLE(KC_TAB, LALT(KC_F4)),
 };
 
 // Add tap dance item to your keymap in place of a keycode
@@ -385,9 +387,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_SYM_NUM] = LAYOUT_split_3x5_3(
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            KC_GRV,      S(KC_8),     S(KC_1),     S(KC_7),     S(KC_BSLS),           KC_7,        KC_8,        KC_9,        KC_MINS,     S(KC_EQL),
+            KC_GRV,      S(KC_8),     S(KC_7),     S(KC_1),     S(KC_BSLS),           KC_7,        KC_8,        KC_9,        KC_MINS,     S(KC_EQL),
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            S(KC_GRV),   S(KC_MINS),  KC_EQL,      S(KC_SCLN),  S(KC_2),              KC_4,        KC_5,        KC_6,        KC_0,        KC_SCLN,
+            S(KC_GRV),   S(KC_MINS),  S(KC_SCLN),  KC_EQL,      S(KC_2),              KC_4,        KC_5,        KC_6,        KC_0,        KC_SCLN,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             KC_BSLS,     S(KC_6),     S(KC_4),     S(KC_5),     S(KC_3),              KC_1,        KC_2,        KC_3,        KC_DOT,      KC_SLSH,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
@@ -396,9 +398,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_EXTEND] = LAYOUT_split_3x5_3(
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            KC_ESC,      CTRL_CMD_L,  CTRL_CMD_R,  SW_WIN,      SW_TAB,               KC_HOME,     KC_PGDN,     KC_PGUP,     KC_END,      KC_INSERT,
+            KC_ESC,      CTRL_CMD_L,  CTRL_CMD_R,  SW_TAB,      SW_WIN,               KC_HOME,     KC_PGDN,     KC_PGUP,     KC_END,      KC_INSERT,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            OSM_CTL_TOGG, OSM_ALT_TOGG, OSM_GUI_TOGG, OSM_SFT_TOGG, KC_TAB,           KC_LEFT,     KC_DOWN,     KC_UP,       KC_RGHT,     KC_BSPC,
+            KC_LCTL,     KC_LALT,     KC_LGUI,    OSM_SFT_TOGG, KC_TAB,               KC_LEFT,     KC_DOWN,     KC_UP,       KC_RGHT,     KC_BSPC,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             UNDO,        CUT,         COPY,        PASTE,       REDO,                 SKIP_WORD_L, SEL_WORD_L,  SEL_WORD_R,  SKIP_WORD_R, KC_DEL,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
@@ -409,7 +411,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             KC_VOLD,     KC_VOLU,     KC_BRID,     KC_BRIU,     UG_TOGG,              KC_F7,       KC_F8,       KC_F9,       KC_F12,      KC_PSCR,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            OSM_CTL_TOGG, OSM_ALT_TOGG, OSM_GUI_TOGG, OSM_SFT_TOGG, KC_NO,            KC_F4,       KC_F5,       KC_F6,       KC_F11,      ALT_F4,
+            KC_LCTL,     KC_LALT,     KC_LGUI,    OSM_SFT_TOGG, KC_NO,                TD(TAB_ALT_F4), KC_F5,    KC_F6,       KC_F11,      KC_NO,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             KC_MPRV,     KC_MNXT,     KC_MPLY,     KC_MUTE,     KC_NO,                KC_F1,       KC_F2,       KC_F3,       KC_F10,      CTL_ALT_DEL,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
@@ -466,7 +468,7 @@ enum combos {
     _COMBO_ARROW_BRACKET_RIGHT,
 };
 
-const uint16_t PROGMEM combo_cw_toggle[] = {KC_X, KC_C, COMBO_END};
+const uint16_t PROGMEM combo_cw_toggle[] = {KC_S, KC_D, KC_F, COMBO_END};
 const uint16_t PROGMEM combo_ctrl_bspc[] = {KC_RGHT, KC_BSPC, COMBO_END};
 const uint16_t PROGMEM combo_ctrl_del[] = {SKIP_WORD_R, KC_DEL, COMBO_END};
 const uint16_t PROGMEM combo_fn[] = {TO(_EXTEND), TO(_SYM_NUM), COMBO_END};
@@ -477,11 +479,11 @@ const uint16_t PROGMEM combo_ctrl_sym_layer[] = {KC_GRV, S(KC_MINS), COMBO_END};
 const uint16_t PROGMEM combo_alt_sym_layer[] = {S(KC_MINS), KC_EQL, COMBO_END};
 const uint16_t PROGMEM combo_esc[] = {KC_J, KC_K, COMBO_END};
 const uint16_t PROGMEM combo_semi_colon[] = {KC_COMM, KC_DOT, COMBO_END};
-const uint16_t PROGMEM combo_parenteses_left[] = {S(KC_SCLN), S(KC_2), COMBO_END};
+const uint16_t PROGMEM combo_parenteses_left[] = {KC_EQL, S(KC_2), COMBO_END};
 const uint16_t PROGMEM combo_parenteses_right[] = {KC_4, KC_5, COMBO_END};
 const uint16_t PROGMEM combo_curly_braces_left[] = {S(KC_5), S(KC_3), COMBO_END};
 const uint16_t PROGMEM combo_curly_braces_right[] = {KC_1, KC_2, COMBO_END};
-const uint16_t PROGMEM combo_square_bracket_left[] = {S(KC_7), S(KC_BSLS), COMBO_END};
+const uint16_t PROGMEM combo_square_bracket_left[] = {S(KC_1), S(KC_BSLS), COMBO_END};
 const uint16_t PROGMEM combo_square_bracket_right[] = {KC_7, KC_8, COMBO_END};
 const uint16_t PROGMEM combo_arrow_bracket_left[] = {KC_EQL, S(KC_SCLN), COMBO_END};
 const uint16_t PROGMEM combo_arrow_bracket_right[] = {KC_5, KC_6, COMBO_END};
@@ -556,35 +558,52 @@ bool rgb_matrix_indicators_user(void) {
             break;
         case _SYM_NUM:
             rgb_matrix_set_color(40, 0, 255, 255);
+            // rgb_matrix_set_color(34, 255, 255, 255); // 1
+            // rgb_matrix_set_color(35, 255, 255, 255); // 4
+            // rgb_matrix_set_color(36, 255, 255, 255); // 7
+            // rgb_matrix_set_color(37, 255, 255, 255); // 8
+            // rgb_matrix_set_color(38, 255, 255, 255); // 5
+            // rgb_matrix_set_color(39, 255, 255, 255); // 2
+            // rgb_matrix_set_color(42, 255, 255, 255); // 3
+            // rgb_matrix_set_color(43, 255, 255, 255); // 6
+            // rgb_matrix_set_color(44, 255, 255, 255); // 9
+            // rgb_matrix_set_color(46, 255, 255, 255); // 0
+            // rgb_matrix_set_color(47, 255, 128, 0); // KC_DOT
             break;
         case _EXTEND:
-            rgb_matrix_set_color(13, 255, 128, 0); // LAYER key
-            rgb_matrix_set_color(23, 80, 0, 0); // ESC key
-            rgb_matrix_set_color(33, 80, 255, 0); // ENTER key
-            rgb_matrix_set_color(49, 255, 100, 0); // BACKSPACE key
-            rgb_matrix_set_color(48, 80, 0, 0); // DEL key
-            rgb_matrix_set_color(8, 0, 255, 255); // TAB key
+            rgb_matrix_set_color(13, 255, 128, 0); // LAYER
+            rgb_matrix_set_color(23, 80, 0, 0); // ESC
+            rgb_matrix_set_color(33, 40, 128, 0); // ENTER
+            rgb_matrix_set_color(49, 255, 100, 0); // BACKSPACE
+            rgb_matrix_set_color(48, 80, 0, 0); // DEL
+            rgb_matrix_set_color(8, 0, 255, 255); // TAB
+            rgb_matrix_set_color(9, 100, 100, 100); // SW_WIN
+            // rgb_matrix_set_color(10, 255, 105, 108); // SW_TAB
             break;
         case _FN:
+            rgb_matrix_set_color(12, 0, 255, 255); // MUTE
+            rgb_matrix_set_color(35, 80, 0, 0); // F4
             rgb_matrix_set_color(41, 255, 20, 147);
             break;
         case _GAME:
-            rgb_matrix_set_color(14, 80, 255, 0);
+            rgb_matrix_set_color(14, 40, 128, 0); // LAYER
             break;
         case _GAME_FN:
-            rgb_matrix_set_color(13, 255, 0, 255);
+            rgb_matrix_set_color(13, 255, 0, 255); // LAYER
             break;
     }
 
 
-    // Blinking rbg light to indicate that caps word will be toggled off in few seconds.
+    // Blinking rbg light to indicate that caps word will be off in few seconds.
     if (is_caps_word_on()) {
         if ((timer_read() / 500) % 2) {
-            rgb_matrix_set_color(20, 0, RGB_MATRIX_MAXIMUM_BRIGHTNESS, 0);
-            rgb_matrix_set_color(15, 0, RGB_MATRIX_MAXIMUM_BRIGHTNESS, 0);
+            rgb_matrix_set_color(19, 0, RGB_MATRIX_MAXIMUM_BRIGHTNESS, 0);
+            rgb_matrix_set_color(16, 0, RGB_MATRIX_MAXIMUM_BRIGHTNESS, 0);
+            rgb_matrix_set_color(11, 0, RGB_MATRIX_MAXIMUM_BRIGHTNESS, 0);
         } else {
-            rgb_matrix_set_color(20, 0, 0, 0);
-            rgb_matrix_set_color(15, 0, 0, 0);
+            rgb_matrix_set_color(19, 0, 0, 0);
+            rgb_matrix_set_color(16, 0, 0, 0);
+            rgb_matrix_set_color(11, 0, 0, 0);
         }
     }
 
