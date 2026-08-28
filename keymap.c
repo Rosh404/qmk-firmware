@@ -348,17 +348,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 // Tap Dance declarations
 enum {
-    TD_QUOTE,
-    TD_SLASH,
     TAB_ALT_F4
 };
 #ifdef TAP_DANCE_ENABLE
 
 // Tap Dance definitions
 tap_dance_action_t tap_dance_actions[] = {
-    [TD_QUOTE] = ACTION_TAP_DANCE_DOUBLE(KC_QUOT, S(KC_QUOT)),
-    [TD_SLASH] = ACTION_TAP_DANCE_DOUBLE(KC_SLSH, S(KC_SLSH)),
-    [TAB_ALT_F4] = ACTION_TAP_DANCE_DOUBLE(KC_TAB, LALT(KC_F4)),
+    [TAB_ALT_F4] = ACTION_TAP_DANCE_DOUBLE(KC_F4, LALT(KC_F4)),
 };
 
 // Add tap dance item to your keymap in place of a keycode
