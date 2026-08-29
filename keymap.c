@@ -364,6 +364,28 @@ tap_dance_action_t tap_dance_actions[] = {
 #endif
 
 // ====================
+// CAPS WORD
+// ====================
+bool caps_word_press_user(uint16_t keycode) {
+    switch (keycode) {
+        // Keycodes that continue Caps Word, with shift applied.
+        case KC_A ... KC_Z:
+            add_weak_mods(MOD_BIT(KC_LSFT));  // Apply shift to next key.
+            return true;
+        // Keycodes that continue Caps Word, without shifting.
+        case KC_MINS:
+        case KC_1 ... KC_0:
+        case KC_BSPC:
+        case KC_DEL:
+        case KC_UNDS:
+            return true;
+
+        default:
+            return false;  // Deactivate Caps Word.
+    }
+}
+
+// ====================
 // LAYERS
 // ====================
 
@@ -377,7 +399,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             KC_Z,        KC_X,        KC_C,        KC_V,        KC_B,                 KC_N,        KC_M,        KC_COMM,     KC_DOT,      KC_SLSH,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-                                           TO(_GAME),  MO(_EXTEND), KC_SPC,           OSM(MOD_LSFT),  MO(_SYM_NUM),   MO(_FN)
+                                           TO(_GAME),  MO(_EXTEND), KC_SPC,           OSM(MOD_LSFT),  OSL(_SYM_NUM),   MO(_FN)
 
     ),
 
@@ -391,6 +413,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
                                       KC_NO,       MO(_EXTEND), KC_SPC,               KC_NO,       KC_NO,       KC_NO
     ),
+
 
     [_EXTEND] = LAYOUT_split_3x5_3(
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
@@ -422,7 +445,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             KC_LSFT,     KC_Z,        KC_X,       KC_C,       KC_V,                   KC_NO,       KC_NO,       KC_NO,       KC_NO,      KC_NO,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-                                    TO(_QWERTY), MO(_GAME_FN), KC_SPC,                KC_NO,       TO(_QWERTY), KC_NO
+                                    TO(_QWERTY), MO(_GAME_FN), KC_SPC,                KC_NO,       KC_NO,       KC_NO
     ),
 
     [_GAME_FN] = LAYOUT_split_3x5_3(
@@ -433,7 +456,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             KC_GRV,      KC_NO,       KC_NO,       KC_NO,       KC_NO,                KC_NO,       KC_NO,       KC_NO,       KC_NO,      KC_NO,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-                                      KC_NO,       KC_NO,       KC_SPC,               KC_NO,       TO(_QWERTY), KC_NO
+                                      KC_NO,       KC_NO,       KC_SPC,               KC_NO,       KC_NO,       KC_NO
     ),
 };
 
@@ -449,9 +472,6 @@ enum combos {
     _COMBO_CMD,
     _COMBO_CTRL,
     _COMBO_ALT,
-    _COMBO_CMD_SYM_NUM_LAYER,
-    _COMBO_CTRL_SYM_NUM_LAYER,
-    _COMBO_ALT_SYM_NUM_LAYER,
     _COMBO_ESC,
     _COMBO_SEMI_COLON,
     _COMBO_PARANTHESES_LEFT,
@@ -471,18 +491,29 @@ const uint16_t PROGMEM combo_fn[] = {TO(_EXTEND), TO(_SYM_NUM), COMBO_END};
 const uint16_t PROGMEM combo_ctrl[] = {KC_A, KC_S, COMBO_END};
 const uint16_t PROGMEM combo_alt[] = {KC_S, KC_D, COMBO_END};
 const uint16_t PROGMEM combo_cmd[] = {KC_D, KC_F, COMBO_END};
-const uint16_t PROGMEM combo_ctrl_sym_layer[] = {KC_GRV, S(KC_MINS), COMBO_END};
-const uint16_t PROGMEM combo_alt_sym_layer[] = {S(KC_MINS), KC_EQL, COMBO_END};
 const uint16_t PROGMEM combo_esc[] = {KC_J, KC_K, COMBO_END};
 const uint16_t PROGMEM combo_semi_colon[] = {KC_COMM, KC_DOT, COMBO_END};
-const uint16_t PROGMEM combo_parenteses_left[] = {KC_EQL, S(KC_2), COMBO_END};
-const uint16_t PROGMEM combo_parenteses_right[] = {KC_4, KC_5, COMBO_END};
-const uint16_t PROGMEM combo_curly_braces_left[] = {S(KC_5), S(KC_3), COMBO_END};
-const uint16_t PROGMEM combo_curly_braces_right[] = {KC_1, KC_2, COMBO_END};
-const uint16_t PROGMEM combo_square_bracket_left[] = {S(KC_1), S(KC_BSLS), COMBO_END};
-const uint16_t PROGMEM combo_square_bracket_right[] = {KC_7, KC_8, COMBO_END};
+
+// _QWERTY Layer
+const uint16_t PROGMEM combo_parenteses_left[] = {KC_F, KC_G, COMBO_END};
+const uint16_t PROGMEM combo_parenteses_right[] = {KC_H, KC_J, COMBO_END};
+const uint16_t PROGMEM combo_curly_braces_left[] = {KC_V, KC_B, COMBO_END};
+const uint16_t PROGMEM combo_curly_braces_right[] = {KC_N, KC_M, COMBO_END};
+const uint16_t PROGMEM combo_square_bracket_left[] = {KC_R, KC_T, COMBO_END};
+const uint16_t PROGMEM combo_square_bracket_right[] = {KC_Y, KC_U, COMBO_END};
 const uint16_t PROGMEM combo_arrow_bracket_left[] = {KC_EQL, S(KC_SCLN), COMBO_END};
 const uint16_t PROGMEM combo_arrow_bracket_right[] = {KC_5, KC_6, COMBO_END};
+
+// _SYM_NUM Layer
+// const uint16_t PROGMEM combo_parenteses_left[] = {KC_EQL, S(KC_2), COMBO_END};
+// const uint16_t PROGMEM combo_parenteses_right[] = {KC_4, KC_5, COMBO_END};
+// const uint16_t PROGMEM combo_curly_braces_left[] = {S(KC_5), S(KC_3), COMBO_END};
+// const uint16_t PROGMEM combo_curly_braces_right[] = {KC_1, KC_2, COMBO_END};
+// const uint16_t PROGMEM combo_square_bracket_left[] = {S(KC_1), S(KC_BSLS), COMBO_END};
+// const uint16_t PROGMEM combo_square_bracket_right[] = {KC_7, KC_8, COMBO_END};
+// const uint16_t PROGMEM combo_arrow_bracket_left[] = {KC_EQL, S(KC_SCLN), COMBO_END};
+// const uint16_t PROGMEM combo_arrow_bracket_right[] = {KC_5, KC_6, COMBO_END};
+
 
 combo_t key_combos[] = {
     [_COMBO_CW_TOGGLE] = COMBO(combo_cw_toggle, CW_TOGG),
@@ -593,9 +624,9 @@ bool rgb_matrix_indicators_user(void) {
     // Blinking rbg light to indicate that caps word will be off in few seconds.
     if (is_caps_word_on()) {
         if ((timer_read() / 500) % 2) {
-            rgb_matrix_set_color(19, 0, RGB_MATRIX_MAXIMUM_BRIGHTNESS, 0);
-            rgb_matrix_set_color(16, 0, RGB_MATRIX_MAXIMUM_BRIGHTNESS, 0);
-            rgb_matrix_set_color(11, 0, RGB_MATRIX_MAXIMUM_BRIGHTNESS, 0);
+            rgb_matrix_set_color(19, 40, 128, 0);
+            rgb_matrix_set_color(16, 40, 128, 0);
+            rgb_matrix_set_color(11, 40, 128, 0);
         } else {
             rgb_matrix_set_color(19, 0, 0, 0);
             rgb_matrix_set_color(16, 0, 0, 0);
@@ -606,19 +637,25 @@ bool rgb_matrix_indicators_user(void) {
     uint8_t oneshot_mods = get_oneshot_mods();
 
     if (oneshot_mods & MOD_BIT(KC_LCTL)) {
-        rgb_matrix_set_color(22, 0, RGB_MATRIX_MAXIMUM_BRIGHTNESS, 0);
+        rgb_matrix_set_color(22, 40, 128, 0);
     }
 
     if (oneshot_mods & MOD_BIT(KC_LALT)) {
-        rgb_matrix_set_color(19, 0, RGB_MATRIX_MAXIMUM_BRIGHTNESS, 0);
+        rgb_matrix_set_color(19, 40, 128, 0);
     }
 
     if (oneshot_mods & MOD_BIT(KC_LGUI)) {
-        rgb_matrix_set_color(16, 0, RGB_MATRIX_MAXIMUM_BRIGHTNESS, 0);
+        rgb_matrix_set_color(16, 40, 128, 0);
     }
 
     if (oneshot_mods & MOD_BIT(KC_LSFT)) {
-        rgb_matrix_set_color(11, 0, RGB_MATRIX_MAXIMUM_BRIGHTNESS, 0);
+        if (layer_state_is(_QWERTY)) {
+            rgb_matrix_set_color(33, 40, 128, 0);
+        }
+
+        if (layer_state_is(_EXTEND)) {
+            rgb_matrix_set_color(11, 40, 128, 0);
+        }
     }
 
     return false;
