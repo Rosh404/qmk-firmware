@@ -405,11 +405,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_SYM_NUM] = LAYOUT_split_3x5_3(
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            KC_GRV,      S(KC_8),     S(KC_BSLS),  S(KC_1),     S(KC_7),           KC_7,        KC_8,        KC_9,        KC_MINS,     S(KC_EQL),
+            KC_GRV,      S(KC_8),     S(KC_BSLS),  S(KC_1),     S(KC_7),              KC_7,        KC_8,        KC_9,        KC_MINS,     S(KC_EQL),
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             S(KC_GRV),   S(KC_MINS),  S(KC_SCLN),  KC_EQL,      S(KC_2),              KC_4,        KC_5,        KC_6,        KC_0,        KC_SCLN,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            KC_BSLS,     S(KC_6),     S(KC_4),     S(KC_5),     S(KC_3),              KC_1,        KC_2,        KC_3,        KC_DOT,      KC_SLSH,
+            KC_BSLS,     S(KC_6),     S(KC_5),     S(KC_4),     S(KC_3),              KC_1,        KC_2,        KC_3,        KC_DOT,      KC_SLSH,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
                                       KC_NO,       MO(_EXTEND), KC_SPC,               KC_NO,       KC_NO,       KC_NO
     ),
@@ -465,6 +465,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // ====================
 #ifdef COMBO_ENABLE
 enum combos {
+    _COMBO_CL_TOGGLE,
     _COMBO_CW_TOGGLE,
     _COMBO_CTRL_BSPC,
     _COMBO_CTRL_DEL,
@@ -484,6 +485,7 @@ enum combos {
     _COMBO_ARROW_BRACKET_RIGHT,
 };
 
+const uint16_t PROGMEM combo_cl_toggle[] = {KC_J, KC_K, KC_L, COMBO_END};
 const uint16_t PROGMEM combo_cw_toggle[] = {KC_S, KC_D, KC_F, COMBO_END};
 const uint16_t PROGMEM combo_ctrl_bspc[] = {KC_RGHT, KC_BSPC, COMBO_END};
 const uint16_t PROGMEM combo_ctrl_del[] = {SKIP_WORD_R, KC_DEL, COMBO_END};
@@ -516,6 +518,7 @@ const uint16_t PROGMEM combo_arrow_bracket_right[] = {KC_5, KC_6, COMBO_END};
 
 
 combo_t key_combos[] = {
+    [_COMBO_CL_TOGGLE] = COMBO(combo_cl_toggle, KC_CAPS),
     [_COMBO_CW_TOGGLE] = COMBO(combo_cw_toggle, CW_TOGG),
     [_COMBO_CTRL_BSPC] = COMBO(combo_ctrl_bspc, C(KC_BSPC)),
     [_COMBO_CTRL_DEL] = COMBO(combo_ctrl_del, C(KC_DEL)),
@@ -632,6 +635,17 @@ bool rgb_matrix_indicators_user(void) {
             rgb_matrix_set_color(16, 0, 0, 0);
             rgb_matrix_set_color(11, 0, 0, 0);
         }
+    }
+
+    // Blinking rbg light to indicate that caps locks will be off in few seconds.
+    if (host_keyboard_led_state().caps_lock) {
+            rgb_matrix_set_color(38, 80, 0, 0);
+            rgb_matrix_set_color(43, 80, 0, 0);
+            rgb_matrix_set_color(46, 80, 0, 0);
+    } else {
+            rgb_matrix_set_color(38, 0, 0, 0);
+            rgb_matrix_set_color(43, 0, 0, 0);
+            rgb_matrix_set_color(46, 0, 0, 0);
     }
 
     uint8_t oneshot_mods = get_oneshot_mods();
