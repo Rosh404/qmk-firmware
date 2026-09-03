@@ -348,13 +348,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 // Tap Dance declarations
 enum {
-    TAB_ALT_F4
+    TAB_ALT_F4,
+    INS_PSCR
 };
 #ifdef TAP_DANCE_ENABLE
 
 // Tap Dance definitions
 tap_dance_action_t tap_dance_actions[] = {
     [TAB_ALT_F4] = ACTION_TAP_DANCE_DOUBLE(KC_F4, LALT(KC_F4)),
+    [INS_PSCR] = ACTION_TAP_DANCE_DOUBLE(KC_INSERT, KC_PSCR),
 };
 
 // Add tap dance item to your keymap in place of a keycode
@@ -418,7 +420,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_EXTEND] = LAYOUT_split_3x5_3(
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            KC_ESC,      CTRL_CMD_L,  CTRL_CMD_R,  SW_TAB,      SW_WIN,               KC_HOME,     KC_PGDN,     KC_PGUP,     KC_END,      KC_INSERT,
+            KC_ESC,      CTRL_CMD_L,  CTRL_CMD_R,  SW_TAB,      SW_WIN,               KC_HOME,     KC_PGDN,     KC_PGUP,     KC_END,      TD(INS_PSCR),
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             KC_LCTL,     KC_LALT,     KC_LGUI,    OSM_SFT_TOGG, KC_TAB,               KC_LEFT,     KC_DOWN,     KC_UP,       KC_RGHT,     KC_BSPC,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
@@ -431,9 +433,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
             KC_VOLD,     KC_VOLU,     KC_BRID,     KC_BRIU,     UG_TOGG,              KC_F7,       KC_F8,       KC_F9,       KC_F12,      KC_PSCR,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            KC_LCTL,     KC_LALT,     KC_LGUI,    OSM_SFT_TOGG, KC_NO,                TD(TAB_ALT_F4), KC_F5,    KC_F6,       KC_F11,      KC_NO,
+            KC_LCTL,     KC_LALT,     KC_LGUI,    OSM_SFT_TOGG, KC_MUTE,              TD(TAB_ALT_F4), KC_F5,    KC_F6,       KC_F11,      KC_NO,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
-            KC_MPRV,     KC_MNXT,     KC_MPLY,     KC_MUTE,     KC_NO,                KC_F1,       KC_F2,       KC_F3,       KC_F10,      CTL_ALT_DEL,
+            KC_MPRV,     KC_MNXT,     KC_MPLY,     KC_NO,       KC_NO,                KC_F1,       KC_F2,       KC_F3,       KC_F10,      CTL_ALT_DEL,
         //|------------+------------+------------+------------+------------|        |------------+------------+------------+------------+------------|
                                       KC_NO,       KC_NO,       KC_NO,                KC_NO,       KC_NO,       KC_NO
     ),
@@ -612,9 +614,10 @@ bool rgb_matrix_indicators_user(void) {
             // rgb_matrix_set_color(10, 255, 105, 108); // SW_TAB
             break;
         case _FN:
-            rgb_matrix_set_color(12, 0, 255, 255); // MUTE
+            rgb_matrix_set_color(41, 255, 20, 147); // LAYER
+            rgb_matrix_set_color(8, 255, 128, 0); // MUTE
+            rgb_matrix_set_color(9, 0, 255, 255); // UG TOGGLE
             rgb_matrix_set_color(35, 80, 0, 0); // F4
-            rgb_matrix_set_color(41, 255, 20, 147);
             break;
         case _GAME:
             rgb_matrix_set_color(14, 40, 128, 0); // LAYER
